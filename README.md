@@ -121,6 +121,8 @@ client secret - is not required in pkce
 
 ![image](https://github.com/user-attachments/assets/bd8bdec3-94b5-4f5c-9db5-f574d09ef1aa)
 
+https://www.youtube.com/watch?v=H1SmCoirFCo
+
 
   
 
