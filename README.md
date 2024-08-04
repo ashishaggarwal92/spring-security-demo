@@ -102,6 +102,12 @@ state - to avoid csrf
 code challeneg-
 methid - 
 
+ ![image](https://github.com/user-attachments/assets/d43e218b-3374-4a74-a310-8891cead1702)
+
+ ![image](https://github.com/user-attachments/assets/10f31c9b-6fb6-461e-af0f-5df3bc138153)
+
+
+
 Step 3) Verify the state parameter and authorization code
 ![image](https://github.com/user-attachments/assets/2a295ad1-70f4-4cda-a6fa-20c54353afb6)
 
