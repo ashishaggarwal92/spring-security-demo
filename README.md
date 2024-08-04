@@ -89,14 +89,29 @@ Do client Registration.
 
 Step 1) Generate code verifier and code challenege
 
-Send authorization request.
-It will contain 
-response_type = code - which means we are expecting authorization code
-client_id
-redirect_url
-scope - 
-state- 
+Step 2) Build authorization request.
+
 ![image](https://github.com/user-attachments/assets/01bfb2ef-24ec-41f9-8b8a-e76f3e2bcedd)
+
+It will contain 
+response_type = code - which means we are expecting an authorization code from the server
+client_id - 
+redirect_url - 
+scope -  this is the same scope during the consent authorisation server going to say - this client wants to access this scope. 
+state - to avoid csrf 
+code challeneg-
+methid - 
+
+Step 3) Verify the state parameter and authorization code
+![image](https://github.com/user-attachments/assets/2a295ad1-70f4-4cda-a6fa-20c54353afb6)
+
+Step 4) /token
+Here grant_type should be pkce
+
+client secret - is not required in pkce
+
+![image](https://github.com/user-attachments/assets/ead1a7dc-9eac-49de-ae33-ff49a1484aad)
+
 
   
 
