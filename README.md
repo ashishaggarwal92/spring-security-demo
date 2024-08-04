@@ -81,5 +81,23 @@ Backend will validate access token. if token is valid, server send data back to 
 Oauth2.0 playground can be used for auth server and generate client id/ code challeneg and code verifyer
 
 
+![image](https://github.com/user-attachments/assets/fb530327-64e7-4dc3-97da-b7b936ae7d2a)
+
+Do client Registration.
+- it will give client id and client secret
+- Click on PKCE
+
+Step 1) Generate code verifier and code challenege
+
+Send authorization request.
+It will contain 
+response_type = code - which means we are expecting authorization code
+client_id
+redirect_url
+scope - 
+state- 
+![image](https://github.com/user-attachments/assets/01bfb2ef-24ec-41f9-8b8a-e76f3e2bcedd)
+
+  
 
 
