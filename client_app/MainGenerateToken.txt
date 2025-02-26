@@ -1,0 +1,21 @@
+package com.example.myapp;
+
+import com.example.oauth2pkce.OAuth2PKCEFlow;
+import com.example.oauth2pkce.PKCEUtils;
+
+public class MyApp {
+
+    public static void main(String[] args) throws Exception {
+        // Generate code verifier and challenge
+        String codeVerifier = PKCEUtils.generateCodeVerifier();
+        String codeChallenge = PKCEUtils.generateCodeChallenge(codeVerifier);
+
+        // Authorization code would be obtained from the Azure auth flow
+        String authorizationCode = "YOUR_AUTHORIZATION_CODE"; 
+
+        // Exchange the authorization code for a token
+        String accessToken = OAuth2PKCEFlow.exchangeAuthorizationCodeForToken(authorizationCode, codeVerifier);
+        
+        System.out.println("Access Token (Bearer): " + accessToken);
+    }
+}

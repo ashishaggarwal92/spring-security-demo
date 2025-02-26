@@ -1,0 +1,56 @@
+package com.example.oauth2pkce;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.HashMap;
+import java.util.Map;
+
+public class OAuth2PKCEFlow {
+
+    // Function to exchange the authorization code for an access token (Bearer Token)
+    public static String exchangeAuthorizationCodeForToken(String authorizationCode, String codeVerifier) throws Exception {
+        String tenantId = "YOUR_TENANT_ID"; // Use "common" for multi-tenant
+        String clientId = "YOUR_CLIENT_ID";
+        String redirectUri = "YOUR_REDIRECT_URI"; // Ensure it matches the one used in the auth request
+
+        // Define token request URL
+        String tokenUrl = "https://login.microsoftonline.com/" + tenantId + "/oauth2/v2.0/token";
+
+        // Prepare the token request parameters
+        Map<Object, Object> data = new HashMap<>();
+        data.put("grant_type", "authorization_code");
+        data.put("code", authorizationCode);  // The authorization code received in the callback
+        data.put("redirect_uri", redirectUri);
+        data.put("client_id", clientId);
+        data.put("code_verifier", codeVerifier);
+
+        // Send token request
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(tokenUrl))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .POST(buildFormData(data))
+                .build();
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return response.body(); // The response will contain the access token
+        } else {
+            System.out.println("Failed to get token: " + response.body());
+            return null;
+        }
+    }
+
+    // Helper function to build form data for POST request
+    private static HttpRequest.BodyPublisher buildFormData(Map<Object, Object> data) {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<Object, Object> entry : data.entrySet()) {
+            if (sb.length() > 0) sb.append("&");
+            sb.append(entry.getKey()).append("=").append(entry.getValue());
+        }
+        return HttpRequest.BodyPublishers.ofString(sb.toString());
+    }
+}

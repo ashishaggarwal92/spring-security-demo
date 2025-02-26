@@ -1,0 +1,32 @@
+package com.example.oauth2pkce;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.client.RestTemplate;
+
+@SpringBootApplication
+public class Application implements CommandLineRunner {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        // Example of obtaining the Bearer Token from Azure AD
+        String authorizationCode = "YOUR_AUTHORIZATION_CODE";  // Get this from the redirect URL after authentication
+        String codeVerifier = "YOUR_CODE_VERIFIER";  // The code verifier generated earlier
+
+        String accessToken = OAuth2PKCEFlow.exchangeAuthorizationCodeForToken(authorizationCode, codeVerifier);
+        System.out.println("Access Token (Bearer): " + accessToken);
+
+        // Call a secured API using the obtained Bearer Token
+        String apiUrl = "https://graph.microsoft.com/v1.0/me";  // Example: Microsoft Graph API
+        String bearerToken = "Bearer " + accessToken;
+        RestTemplate restTemplate = new RestTemplate();
+        String response = restTemplate.getForObject(apiUrl, String.class, bearerToken);
+
+        System.out.println("API Response: " + response);
+    }
+}

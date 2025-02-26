@@ -1,0 +1,31 @@
+package com.example.oauth2pkce;
+
+import java.security.SecureRandom;
+import java.util.Base64;
+import java.security.MessageDigest;
+
+public class PKCEUtils {
+
+    // Generate a code verifier (random string of length between 43 and 128 characters)
+    public static String generateCodeVerifier() {
+        byte[] randomBytes = new byte[32]; // 32 bytes = 43 characters (minimum length)
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(randomBytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
+    }
+
+    // Generate the code challenge (SHA256 hash of the code verifier, base64 encoded)
+    public static String generateCodeChallenge(String codeVerifier) throws Exception {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(codeVerifier.getBytes("UTF-8"));
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
+    }
+
+    public static void main(String[] args) throws Exception {
+        String codeVerifier = generateCodeVerifier();
+        String codeChallenge = generateCodeChallenge(codeVerifier);
+
+        System.out.println("Code Verifier: " + codeVerifier);
+        System.out.println("Code Challenge: " + codeChallenge);
+    }
+}
