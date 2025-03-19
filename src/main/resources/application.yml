@@ -1,0 +1,29 @@
+server:
+  port: 8080
+
+ security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Azure AD issuer URI
+          issuer-uri: https://login.microsoftonline.com/{tenant-id}/v2.0
+          # Azure AD JSON Web Key Set URI
+          jwk-set-uri: https://login.microsoftonline.com/{tenant-id}/discovery/v2.0/keys
+
+  cloud:
+    gateway:
+      routes:
+        - id: service1
+          uri: lb://SERVICE-1
+          predicates:
+            - Path=/service1/**
+          filters:
+            - AddRequestHeader=X-Auth-User, "#{authentication?.name}"  # Optionally pass user info to backend services
+        - id: service2
+          uri: lb://SERVICE-2
+          predicates:
+            - Path=/service2/**
+          filters:
+            - AddRequestHeader=X-Auth-User, "#{authentication?.name}"
+
+
