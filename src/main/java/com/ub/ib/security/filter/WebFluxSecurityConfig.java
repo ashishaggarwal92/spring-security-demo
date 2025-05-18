@@ -14,6 +14,7 @@ import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -58,20 +59,24 @@ public class WebFluxSecurityConfig {
     public Converter<Jwt, Mono<AbstractAuthenticationToken>> customJwtAuthenticationConverter() {
         return jwt -> {
             String username = jwt.getClaimAsString("preferred_username");
+            if (username == null || username.isEmpty()) {
+                //return Mono.error(new UsernameNotFoundException("JWT missing preferred_username claim"));
+            }
 
-            Mono<LdapUserDetails> userDetailsMono = ldapService.loadUserByUsername(username);
-            Mono<Collection<GrantedAuthority>> authoritiesMono = ldapService.getAuthoritiesByUsername(username);
+            return ldapService.loadUserByUsername(username)
+                    .flatMap(userDetails ->
+                            ldapService.getAuthoritiesByUserId(userDetails.getUserId())
+                                    .map(ldapGroups -> {
+                                        // Convert LDAPGroups to GrantedAuthority
+                                        List<SimpleGrantedAuthority> authorities = ldapGroups.stream()
+                                                .map(group -> new SimpleGrantedAuthority(group.getGroupName())) // Adjust if different getter
+                                                .toList();
 
-            return Mono.zip(userDetailsMono, authoritiesMono)
-                    .map(tuple -> {
-                        LdapUserDetails userDetails = tuple.getT1();
-                        Collection<GrantedAuthority> authorities = tuple.getT2();
-
-                        JwtAuthenticationToken authentication = new JwtAuthenticationToken(jwt, authorities);
-                        authentication.setDetails(userDetails); // Add extra info to the security context
-
-                        return authentication;
-                    });
+                                        JwtAuthenticationToken authentication = new JwtAuthenticationToken(jwt, authorities);
+                                        authentication.setDetails(userDetails);
+                                        return authentication;
+                                    })
+                    );
         };
     }
 

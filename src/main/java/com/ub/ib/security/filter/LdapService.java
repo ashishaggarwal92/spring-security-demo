@@ -8,5 +8,5 @@ import java.util.Collection;
 public interface LdapService {
 
     Mono<LdapUserDetails> loadUserByUsername(String username);
-    Mono<Collection<GrantedAuthority>> getAuthoritiesByUsername(String userName);
+    Mono<Collection<LdapGroup>> getAuthoritiesByUserId(String userName);
 }

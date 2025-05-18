@@ -9,6 +9,7 @@ import java.util.Collection;
 @Data
 public class LdapUserDetails implements UserDetails {
 
+    private String userId;
     private String username;
     private String firstName;
     private String lastName;
