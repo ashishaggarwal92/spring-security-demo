@@ -1,4 +1,4 @@
-package com.ub.ib;
+package com.ub.ib.controller;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
