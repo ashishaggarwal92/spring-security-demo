@@ -1,5 +1,6 @@
 package com.ub.ib.security.filter;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -10,10 +11,13 @@ import reactor.core.publisher.Mono;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE) // Ensures this filter runs before all others
+@Slf4j
 public class RequestLoggingWebFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        log.info("RequestLoggingWebFilter Order: 1 ");
+
         String method = exchange.getRequest().getMethod().name();
         String path = exchange.getRequest().getURI().getRawPath();
         String query = exchange.getRequest().getURI().getRawQuery();

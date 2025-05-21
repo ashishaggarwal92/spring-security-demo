@@ -1,0 +1,16 @@
+#--
+#-- elastic version = 2.3.1
+#-- 2 node elastic cluster
+# both nodes on separate server
+
+# node1  123-321.ldn.com
+
+cluster.name: elasticsearch
+node.name: docx
+path.data: "/app/ls/"
+
+network.host: ["123-321.ldn.com", "_local_"]
+
+discovery.zen.ping.unicast.hosts: ["123-321.ldn.com","123-345.ldn.com"]
+index.query.bool.max_clause_count: 10000
+node.max_local_storage_nodes: 1

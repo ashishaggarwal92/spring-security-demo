@@ -1,5 +1,8 @@
-package com.ub.ib.security.filter;
+package com.ub.ib.security;
 
+import com.ub.ib.security.filter.CustomJwtAuthenticationConverter;
+import com.ub.ib.security.filter.CustomPathMatcher;
+import com.ub.ib.security.filter.CustomUrlFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +17,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @RequiredArgsConstructor
 public class WebFluxSecurityConfig {
 
-    private final CustomUrlFilter customUrlFilter;
     private final CustomPathMatcher customPathMatcher;
     private final CustomJwtAuthenticationConverter customJwtAuthenticationConverter;
 
@@ -22,22 +24,13 @@ public class WebFluxSecurityConfig {
     public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .authorizeExchange(
-                        auth -> customPathMatcher.configureMatchers(auth)
-                )
-
+                .authorizeExchange(auth -> customPathMatcher.configureMatchers(auth))
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(customJwtAuthenticationConverter) // Optional: Convert claims to authorities
-                        ))
-        ;
-        http.addFilterBefore(customUrlFilter, SecurityWebFiltersOrder.AUTHENTICATION);
+                        ));
 
         return http.build();
-
     }
-
-
-
 
 }

@@ -1,4 +1,4 @@
-package com.ub.ib.security.filter;
+package com.ub.ib.security.ldap;
 
 import lombok.Getter;
 import lombok.Setter;

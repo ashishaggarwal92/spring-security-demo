@@ -1,0 +1,37 @@
+1) Restrict only HTTP access (9200) to localhost, but allow clustering (9300)
+2) Prevents external clients from accessing :9200
+3) Allows nodes to talk to each other on :9300
+4) Keeps REST API available only locally
+5) Missing discovery.zen.minimum_master_nodes — dangerous in 2-node setups. This is critical in a 2-node cluster to prevent split-brain.If you don't set this, both nodes may think they're the master, causing data loss or cluster instability
+6) Missing node.master / node.data — not required but strongly recommended.
+7) network.host uses hostname + _local_, which can work if hostname resolution is solid and correct in /etc/hosts or DNS.
+
+
+Check Confirm that 9200 is only bound to 127.0.0.1:
+if it is giving more than one entry then we need to bound it using hostname
+-- netstat -tulnp | grep 9200
+
+
+# ip od node
+hostname -I
+
+-- nslookup
+
+cluster.name: elasticsearch
+node.name: docx
+
+path.data: "/app/ls/"
+node.master: true
+node.data: true
+
+# Disable external REST access
+http.host: 123-321.ldn.com
+
+# Allow clustering via transport port (9300)
+transport.host: 123-321.ldn.com
+
+discovery.zen.ping.unicast.hosts: ["123-321.ldn.com", "123-345.ldn.com"]
+discovery.zen.minimum_master_nodes: 2
+
+index.query.bool.max_clause_count: 10000
+node.max_local_storage_nodes: 1

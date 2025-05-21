@@ -1,4 +1,4 @@
-package com.ub.ib.security.filter;
+package com.ub.ib.security.ldap;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,5 +1,10 @@
 package com.ub.ib.security.filter;
 
+import com.ub.ib.security.domain.AuthDetailSource;
+import com.ub.ib.security.domain.UserDetail;
+import com.ub.ib.security.ldap.LdapGroup;
+import com.ub.ib.security.ldap.LdapService;
+import com.ub.ib.security.ldap.LdapUserDetails;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,19 +32,32 @@ public class CustomJwtAuthenticationConverter implements Converter<Jwt, Mono<Jwt
         }
 
         return ldapService.loadUserByUsername(username)
-                .flatMap(userDetails ->
-                        ldapService.getAuthoritiesByUserId(userDetails.getUserId())
-                                .map(ldapGroups -> {
-                                    // Convert LDAPGroups to GrantedAuthority
-                                    List<SimpleGrantedAuthority> authorities = ldapGroups.stream()
-                                            .map(group -> new SimpleGrantedAuthority(group.getGroupName())) // Adjust if different getter
-                                            .toList();
+                .flatMap(userDetails -> {
 
-                                    JwtAuthenticationToken authentication = new JwtAuthenticationToken(jwt, authorities);
-                                    authentication.setDetails(userDetails);
-                                    return authentication;
-                                })
-                );
+                    AuthDetailSource authDetail = new AuthDetailSource();
+                    populateUserDetail(authDetail, userDetails);
+                    List<SimpleGrantedAuthority> authorities = authorities(userDetails.getUserId());
+
+                    JwtAuthenticationToken authentication = new JwtAuthenticationToken(jwt, authorities);
+                    authentication.setDetails(authDetail);
+                    return Mono.just(authentication);
+
+                });
+    }
+
+    private void populateUserDetail(AuthDetailSource authDetail, LdapUserDetails userDetails) {
+
+        UserDetail userDetail = authDetail.getUserDetail();
+        userDetail.setFirstName(userDetail.getFirstName());
+    }
+
+    private List<SimpleGrantedAuthority> authorities(String userId){
+        List<LdapGroup> ldapGroups= ldapService.getAuthoritiesByUserId(userId);
+        return ldapGroups.stream()
+                .map(group -> new SimpleGrantedAuthority(group.getGroupName())) // Adjust if different getter
+                .toList();
+
+
     }
 
 }
