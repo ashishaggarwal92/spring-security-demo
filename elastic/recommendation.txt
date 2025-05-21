@@ -35,3 +35,16 @@ discovery.zen.minimum_master_nodes: 2
 
 index.query.bool.max_clause_count: 10000
 node.max_local_storage_nodes: 1
+
+
+---
+cluster.name	Must be identical on both nodes.
+node.name	Should be unique for each node.
+network.host	Set to the actual IP of the node.
+discovery.zen.ping.unicast.hosts	List of all node IPs in the cluster (not localhost).
+discovery.zen.minimum_master_nodes: 2	Prevents split-brain — essential in 2-node clusters.
+node.master and node.data	Both nodes can be master and data nodes, but only one is master at a time.
+
+1- ping FQDN / host name from both host
+2- check hostname -I
+3- netstat -tulnp | grep 9200

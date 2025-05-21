@@ -8,7 +8,7 @@
 cluster.name: elasticsearch
 node.name: docx_bcp
 path.data: "/app/ls/"
-bootstrap_system.call.filter: false
+bootstrap.system_call_filter: false
 network.host: ["123-345.ldn.com", "_local_"]
 
 discovery.zen.ping.unicast.hosts: ["123-321.ldn.com","123-345.ldn.com"]
