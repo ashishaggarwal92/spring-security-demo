@@ -48,3 +48,15 @@ node.master and node.data	Both nodes can be master and data nodes, but only one 
 1- ping FQDN / host name from both host
 2- check hostname -I
 3- netstat -tulnp | grep 9200
+
+
+General Notes for Elasticsearch 2.3.1:
+End of Life: Support has ended — no more security updates or bug fixes.
+
+Transport Client (Java): Was used in this version but deprecated in later ones.
+
+Index Compatibility: Indices from 2.x are not directly compatible with newer versions like 7.x+ — upgrade requires intermediate steps (2.x → 5.x → 6.x → 7.x, etc.).
+
+REST API: Limited compared to modern Elasticsearch. Fewer endpoints and features.
+
+Security: No built-in authentication/authorization — need to use Shield (a commercial plugin at the time).
